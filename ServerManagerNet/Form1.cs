@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Threading;
+using System.Security.Cryptography;
 
 namespace ServerManagerNet
 {
@@ -24,6 +25,8 @@ namespace ServerManagerNet
         byte[] data = new byte[1024];
         byte[] dataSend = new byte[1024];
         List<Socket> clientList;
+
+        int countNofti = 1;
         public Form1()
         {
             InitializeComponent();
@@ -34,6 +37,10 @@ namespace ServerManagerNet
         {
             SetDataCBX();
             dataGridView1.DataSource = GetAllListHoiVien().Tables[0];
+            tbMessClient2.TextAlign = HorizontalAlignment.Right;
+            lbCountNofti.BackColor = System.Drawing.Color.FromArgb(244, 67, 54);
+            pnNofti1.Visible = false;
+            tbMessClient1.ReadOnly = tbMessClient2.ReadOnly = true;
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
@@ -46,29 +53,38 @@ namespace ServerManagerNet
             string query = "select * from DanhSachMenu";
             using (SqlConnection connection = new SqlConnection(connectString))
             {
-                connection.Open();
-                SqlCommand sqlc = new SqlCommand(query, connection);
-                SqlDataReader adapter = sqlc.ExecuteReader();
-                while (adapter.Read())
+                try
                 {
-                    cbxListTable.Items.Add(adapter.GetString("name").Trim());
+                    connection.Open();
+                    SqlCommand sqlc = new SqlCommand(query, connection);
+                    SqlDataReader adapter = sqlc.ExecuteReader();
+                    while (adapter.Read())
+                    {
+                        cbxListTable.Items.Add(adapter.GetString("name").Trim());
+                    }
+                    adapter.Close();
+                    connection.Close();
+                    cbxListTable.SelectedIndex = 0;
                 }
-                adapter.Close();
-                connection.Close();
-                cbxListTable.SelectedIndex = 0;
+                catch { }
             }
+
         }
         DataSet GetAllMenu(string x)
         {
             string s = x.Replace(" ", "");
             DataSet data = new DataSet();
             string query = "select * from " + s;
-            using(SqlConnection connection = new SqlConnection(connectString))
+            using (SqlConnection connection = new SqlConnection(connectString))
             {
-                connection.Open();
-                SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                adapter.Fill(data);
-                connection.Close();
+                try
+                {
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+                    adapter.Fill(data);
+                    connection.Close();
+                }
+                catch { }
             }
             return data;
         }
@@ -78,10 +94,14 @@ namespace ServerManagerNet
             string query = "select * from DanhSachHoiVien";
             using (SqlConnection connection = new SqlConnection(connectString))
             {
-                connection.Open();
-                SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                adapter.Fill(data);
-                connection.Close();
+                try
+                {
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+                    adapter.Fill(data);
+                    connection.Close();
+                }
+                catch { }
             }
             return data;
         }
@@ -108,7 +128,8 @@ namespace ServerManagerNet
                         recvice.Start(client);
                     }
                 }
-                catch {
+                catch
+                {
                     ipep = new IPEndPoint(IPAddress.Any, 9050);
                     server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 }
@@ -127,14 +148,14 @@ namespace ServerManagerNet
             Socket client = obj as Socket;
             try
             {
-                while(true)
+                while (true)
                 {
 
                     recv = client.Receive(data);
                     string s = Encoding.ASCII.GetString(data, 0, recv);
                     string[] ss = s.Split(":");
 
-                    if(ss[0] == "order")
+                    if (ss[0] == "order")
                     {
                         string[] row1 = { ss[2] };
                         listView1.Items.Add(ss[1]).SubItems.AddRange(row1);
@@ -154,7 +175,15 @@ namespace ServerManagerNet
                     }
                     if (ss[0] == "chat")
                     {
-                        textBox1.Text += "\n" + ss[1].Trim() + ": " + ss[2].Trim();
+                        countNofti++;
+                        if (countNofti > 0)
+                        {
+                            lbCountNofti.Text = countNofti.ToString();
+                            pnNofti1.Visible = true;
+                        }
+                        tbMessClient1.Text += ss[1].Trim() + ": " + ss[2].Trim();
+                        tbMessClient2.Text += "\r\n";
+                        tbMessClient1.Text += "\r\n";
                     }
 
                 }
@@ -165,6 +194,30 @@ namespace ServerManagerNet
         {
             string[] row1 = { "Sửa Chua" };
             listView1.Items.Add("Test").SubItems.AddRange(row1);
+        }
+
+        private void btnSendChat_Click(object sender, EventArgs e)
+        {
+            tbMessClient2.Text += tbMessChat.Text;
+            tbMessClient1.Text += "\r\n";
+            tbMessClient2.Text += "\r\n";
+            tbMessChat.Text = "";
+        }
+        public static string HashSHA512(string value)
+        {
+            using (SHA512 sha512Hash = SHA512.Create())
+            {
+                byte[] sourceBytes = Encoding.UTF8.GetBytes(value);
+                byte[] hashBytes = sha512Hash.ComputeHash(sourceBytes);
+                string hash = BitConverter.ToString(hashBytes).Replace("-", String.Empty);
+                return hash;
+            }
+        }
+
+        private void picNofti_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 2;
+            pnNofti1.Visible = false;
         }
     }
 }

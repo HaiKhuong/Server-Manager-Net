@@ -29,10 +29,10 @@ namespace ServerManagerNet
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "May 1",
             "Nap 1.000.000vnd"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "May 2",
             "Strongbow"}, -1);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
@@ -43,6 +43,9 @@ namespace ServerManagerNet
             this.colClient = new System.Windows.Forms.ColumnHeader();
             this.colService = new System.Windows.Forms.ColumnHeader();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.pnNofti1 = new System.Windows.Forms.Panel();
+            this.lbCountNofti = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabData = new System.Windows.Forms.TabPage();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -57,11 +60,17 @@ namespace ServerManagerNet
             this.cbxListTable = new System.Windows.Forms.ComboBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.tabChat = new System.Windows.Forms.TabPage();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbMessClient2 = new System.Windows.Forms.TextBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.btnSendChat = new System.Windows.Forms.Button();
+            this.tbMessChat = new System.Windows.Forms.TextBox();
+            this.tbMessClient1 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabHome.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.pnNofti1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabData.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -108,14 +117,15 @@ namespace ServerManagerNet
             // 
             // listView1
             // 
+            this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colClient,
             this.colService});
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.HideSelection = false;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3,
-            listViewItem4});
+            listViewItem1,
+            listViewItem2});
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(335, 419);
@@ -135,6 +145,7 @@ namespace ServerManagerNet
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.pnNofti1);
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(3, 3);
@@ -142,12 +153,44 @@ namespace ServerManagerNet
             this.panel1.Size = new System.Drawing.Size(436, 419);
             this.panel1.TabIndex = 0;
             // 
+            // pnNofti1
+            // 
+            this.pnNofti1.Controls.Add(this.lbCountNofti);
+            this.pnNofti1.Controls.Add(this.pictureBox2);
+            this.pnNofti1.Location = new System.Drawing.Point(348, 0);
+            this.pnNofti1.Name = "pnNofti1";
+            this.pnNofti1.Size = new System.Drawing.Size(88, 85);
+            this.pnNofti1.TabIndex = 3;
+            // 
+            // lbCountNofti
+            // 
+            this.lbCountNofti.AutoSize = true;
+            this.lbCountNofti.BackColor = System.Drawing.Color.Red;
+            this.lbCountNofti.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lbCountNofti.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.lbCountNofti.Location = new System.Drawing.Point(60, 5);
+            this.lbCountNofti.Name = "lbCountNofti";
+            this.lbCountNofti.Size = new System.Drawing.Size(20, 22);
+            this.lbCountNofti.TabIndex = 2;
+            this.lbCountNofti.Text = "1";
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(6, 0);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(82, 81);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.TabIndex = 1;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.picNofti_Click);
+            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(33, 49);
+            this.pictureBox1.Location = new System.Drawing.Point(24, 48);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(337, 336);
+            this.pictureBox1.Size = new System.Drawing.Size(318, 313);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -281,7 +324,11 @@ namespace ServerManagerNet
             // 
             // tabChat
             // 
-            this.tabChat.Controls.Add(this.textBox1);
+            this.tabChat.Controls.Add(this.tbMessClient2);
+            this.tabChat.Controls.Add(this.comboBox1);
+            this.tabChat.Controls.Add(this.btnSendChat);
+            this.tabChat.Controls.Add(this.tbMessChat);
+            this.tabChat.Controls.Add(this.tbMessClient1);
             this.tabChat.Location = new System.Drawing.Point(4, 24);
             this.tabChat.Name = "tabChat";
             this.tabChat.Size = new System.Drawing.Size(777, 425);
@@ -289,14 +336,57 @@ namespace ServerManagerNet
             this.tabChat.Text = "CHAT";
             this.tabChat.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // tbMessClient2
             // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(777, 425);
-            this.textBox1.TabIndex = 0;
+            this.tbMessClient2.BackColor = System.Drawing.Color.White;
+            this.tbMessClient2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbMessClient2.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.tbMessClient2.Location = new System.Drawing.Point(384, 0);
+            this.tbMessClient2.Multiline = true;
+            this.tbMessClient2.Name = "tbMessClient2";
+            this.tbMessClient2.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.tbMessClient2.Size = new System.Drawing.Size(390, 385);
+            this.tbMessClient2.TabIndex = 4;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(586, 391);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(110, 27);
+            this.comboBox1.TabIndex = 3;
+            // 
+            // btnSendChat
+            // 
+            this.btnSendChat.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnSendChat.Location = new System.Drawing.Point(702, 391);
+            this.btnSendChat.Name = "btnSendChat";
+            this.btnSendChat.Size = new System.Drawing.Size(67, 26);
+            this.btnSendChat.TabIndex = 2;
+            this.btnSendChat.Text = "Send";
+            this.btnSendChat.UseVisualStyleBackColor = true;
+            this.btnSendChat.Click += new System.EventHandler(this.btnSendChat_Click);
+            // 
+            // tbMessChat
+            // 
+            this.tbMessChat.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.tbMessChat.Location = new System.Drawing.Point(0, 391);
+            this.tbMessChat.Name = "tbMessChat";
+            this.tbMessChat.Size = new System.Drawing.Size(580, 26);
+            this.tbMessChat.TabIndex = 1;
+            // 
+            // tbMessClient1
+            // 
+            this.tbMessClient1.BackColor = System.Drawing.SystemColors.Window;
+            this.tbMessClient1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbMessClient1.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.tbMessClient1.ForeColor = System.Drawing.Color.Blue;
+            this.tbMessClient1.Location = new System.Drawing.Point(0, 0);
+            this.tbMessClient1.Multiline = true;
+            this.tbMessClient1.Name = "tbMessClient1";
+            this.tbMessClient1.Size = new System.Drawing.Size(384, 385);
+            this.tbMessClient1.TabIndex = 0;
             // 
             // Form1
             // 
@@ -312,6 +402,9 @@ namespace ServerManagerNet
             this.tabHome.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.pnNofti1.ResumeLayout(false);
+            this.pnNofti1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabData.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
@@ -348,8 +441,15 @@ namespace ServerManagerNet
         private System.Windows.Forms.ColumnHeader colService;
         private System.Windows.Forms.Button btnSubmit;
         private System.Windows.Forms.TabPage tabChat;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbMessClient1;
         private System.Windows.Forms.Label lbNumberPage;
+        private System.Windows.Forms.Button btnSendChat;
+        private System.Windows.Forms.TextBox tbMessChat;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox tbMessClient2;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Panel pnNofti1;
+        private System.Windows.Forms.Label lbCountNofti;
     }
 }
 
