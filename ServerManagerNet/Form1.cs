@@ -155,23 +155,102 @@ namespace ServerManagerNet
                     string s = Encoding.ASCII.GetString(data, 0, recv);
                     string[] ss = s.Split(":");
 
-                    if (ss[0] == "order")
-                    {
-                        string[] row1 = { ss[2] };
-                        listView1.Items.Add(ss[1]).SubItems.AddRange(row1);
-                        listView1.EnsureVisible(listView1.Items.Count - 1);
-                    }
+                    //if (ss[0] == "order")
+                    //{
+                    //    string[] row1 = { ss[2] };
+                    //    listView1.Items.Add(ss[1]).SubItems.AddRange(row1);
+                    //    listView1.EnsureVisible(listView1.Items.Count - 1);
+
+                    //    string maLichSuGD = RandomString(10);
+                    //    string query = "insert into DanhSachNapTien(TenDichVu, MaKichSuGD, SDT, SoLuong, ThoiGianMua) values(@TenDichVu, @MaKichSuGD, @SDT, @SoLuong, @ThoiGianMua)";
+                    //    using (SqlConnection connection = new SqlConnection(connectString))
+                    //    {
+                    //        try
+                    //        {
+                    //            connection.Open();
+                    //            SqlCommand cmd = new SqlCommand(query, connection);
+                    //            cmd.Parameters.AddWithValue("@TenDichVu", ss[1]);
+                    //            cmd.Parameters.AddWithValue("@MaKichSuGD", maLichSuGD.Trim());
+                    //            cmd.Parameters.AddWithValue("@SDT", ss[2]);
+                    //            cmd.Parameters.AddWithValue("@SoSoLuongLuong", ss[3]);
+                    //            cmd.Parameters.AddWithValue("@ThoiGianMua", ss[4]);
+                    //            cmd.ExecuteNonQuery();
+                    //            connection.Close();
+                    //        }
+                    //        catch { }
+                    //    }
+                    //}
                     if (ss[0] == "login")
                     {
                         MessageBox.Show("LOGIN");
+                        string query = "select password from DanhSachHoiVien where = @sdt";
+                        using (SqlConnection connection = new SqlConnection(connectString))
+                        {
+                            try
+                            {
+                                connection.Open();
+                                SqlCommand command = new SqlCommand(query, connection);
+                                command.Parameters.AddWithValue("@sdt", ss[1].Trim());
+                                using (SqlDataReader reader = command.ExecuteReader())
+                                {
+                                    if (reader.Read())
+                                    {
+                                        string sdt = String.Format("{0}", reader["MatKhau"]);
+                                        if (CreateMD5(sdt).Trim() == ss[2].Trim())
+                                        {
+                                            //SEND CLIENT
+                                        }
+                                    }
+                                }
+                                connection.Close();
+                            }
+                            catch { }
+                        }
                     }
-                    if (ss[0] == "recharge")
+                    if (ss[0] == "recharge" || ss[0] == "order")
                     {
+                        string maYeuCau = RandomString(5);
                         MessageBox.Show("NAP TIEN");
-                    }
-                    if (ss[0] == "support")
-                    {
-                        MessageBox.Show("SUPPORT");
+                        string query = "insert into DanhSacYeuCau(MaYeuCau, SDT, TenDichVu, TrangThai, SoLuong, NgayGioYeuCau) values(@MaYeuCau, @SDT, @TenDichVu, @TrangThai, @SoLuong, @NgayGioYeuCau)";
+                        using (SqlConnection connection = new SqlConnection(connectString))
+                        {
+                            try
+                            {
+                                connection.Open();
+                                SqlCommand cmd = new SqlCommand(query, connection);
+                                cmd.Parameters.AddWithValue("@MaYeuCau", maYeuCau.Trim());
+                                cmd.Parameters.AddWithValue("@SDT", ss[1]);
+                                cmd.Parameters.AddWithValue("@TenDichVu", ss[2]);
+                                cmd.Parameters.AddWithValue("@TrangThai", 1);
+                                cmd.Parameters.AddWithValue("@SoLuong", ss[3]);
+                                cmd.Parameters.AddWithValue("@NgayGioYeuCau", ss[4]);
+                                cmd.ExecuteNonQuery();
+                                connection.Close();
+                            }
+                            catch { }
+                        }
+                        string[] row1 = { ss[2] };
+                        listView1.Items.Add(ss[1]).SubItems.AddRange(row1);
+                        listView1.EnsureVisible(listView1.Items.Count - 1);
+
+                        string maLichSuGD = RandomString(10);
+                        string query1 = "insert into DanhSachNapTien(TenDichVu, MaKichSuGD, SDT, SoLuong, ThoiGianMua) values(@TenDichVu, @MaKichSuGD, @SDT, @SoLuong, @ThoiGianMua)";
+                        using (SqlConnection connection = new SqlConnection(connectString))
+                        {
+                            try
+                            {
+                                connection.Open();
+                                SqlCommand cmd = new SqlCommand(query1, connection);
+                                cmd.Parameters.AddWithValue("@TenDichVu", ss[1]);
+                                cmd.Parameters.AddWithValue("@MaKichSuGD", maLichSuGD.Trim());
+                                cmd.Parameters.AddWithValue("@SDT", ss[2]);
+                                cmd.Parameters.AddWithValue("@SoSoLuongLuong", ss[3]);
+                                cmd.Parameters.AddWithValue("@ThoiGianMua", ss[4]);
+                                cmd.ExecuteNonQuery();
+                                connection.Close();
+                            }
+                            catch { }
+                        }
                     }
                     if (ss[0] == "chat")
                     {
@@ -213,11 +292,35 @@ namespace ServerManagerNet
                 return hash;
             }
         }
+        public static string CreateMD5(string input)
+        {
+            // Use input string to calculate MD5 hash
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // Convert the byte array to hexadecimal string
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
+            }
+        }
 
         private void picNofti_Click(object sender, EventArgs e)
         {
             tabControl1.SelectedIndex = 2;
             pnNofti1.Visible = false;
+        }
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }
